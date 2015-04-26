@@ -48,9 +48,15 @@ R = (function (document, undefined) {
                 // Should really use an object and then Object.keys to avoid
                 // duplicate dependencies. But that costs bytes.
                 deps = [];
-                // remove empty and commented lines to avoid unwanted "require(...)"
-                // reference: http://upshots.org/javascript/javascript-regexp-to-remove-comments
-                (module.t = module.t || request.response.replace(/(\r?\n$|\r$\/\*([\s\S]*?)\*\/)|(\/\/(.*)$)/gm, '')).replace(/(?:^|[^\s\w\$_.\t]|)require\s*\(\s*["']([^"']*)["']\s*\)/gm, function (_, id) {
+                // Use the follow RegEx to remove the "require" calls inside a comment:
+                //(module.t = module.t || request.response).replace(/(?:\/\*[\s\S]*?\*\/|\/\/.*$)|\brequire\s*\(\s*["']([^"']*)["']\s*\)/gm,
+                //    function (_, id) {
+                //        if (id) {
+                //            deps.push(id);
+                //        }
+                //    }
+                //);
+                (module.t = module.t || request.response).replace(/\brequire\s*\(\s*["']([^"']*)["']\s*\)/gm, function (_, id) {
                     deps.push(id);
                 });
                 count = deps.length;
