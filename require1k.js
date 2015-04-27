@@ -43,16 +43,16 @@ R = (function (document, undefined) {
         var location = module.g = module.l;
 
         var request = new XMLHttpRequest();
-        function onLoad(deps, count) {
+        function onLoad() {
+            var deps, count;
             var status = request.status;
             var response = request.response;
             if (status == 200 || (status == 0 && response) || module.t) {
-                // Should really use an object and then Object.keys to avoid
-                // duplicate dependencies. But that costs bytes.
                 deps = [];
                 (module.t = module.t || response).replace(/(?:\/\*[\s\S]*?\*\/|\/\/.*$)|\brequire\s*\(\s*["']([^"']*)["']\s*\)/gm,
                     function (_, id) {
-                        if (id) {
+                        if (id && !~deps.indexOf(id)) {
+                            console.debug('add ' + id);
                             deps.push(id);
                         }
                     }
